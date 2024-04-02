@@ -1,0 +1,86 @@
+{
+  "name": "automation-ui",
+  "version": "1.0.0",
+  "description": "Projeto de automação para o abt fare",
+  "main": "index.js",
+  "scripts": {
+    "run:lint:js": "eslint --fix cypress/**/*.js",
+    "run:lint:gherkin": "gherkin-lint -c .gherkin-lintrc cypress/e2e/gherkins/**",
+    "run:lints": "npm run run:lint:gherkin",
+    "cypress:run": "CYPRESS_ENVIRONMENT=prd cypress run --reporter mocha-allure-reporter",
+    "allure:generate:report": "sleep 2 && allure generate allure-results --clean -o allure-report",
+    "allure:clear": "rm -r allure-results/ allure-report || true",
+    "allure:open": "allure open allure-report",
+    "cypress:open": "CYPRESS_ENVIRONMENT=prd cypress open",
+    "generate:report": "sleep 1 && npm run allure:generate:report",
+    "cypress:tag": "npm run allure:clear && CYPRESS_ENVIRONMENT=prd cypress run -headed --browser chrome --reporter mocha-allure-reporter && npm run generate:report || npm run generate:report",
+    "cypress:regression": "npm run allure:clear && NO_COLOR=1 DEBUG=1 && CYPRESS_ENVIRONMENT=prd CYPRESS_JENKINS_SLACK=true CYPRESS_TYPE_TEST=reg cypress run --headed --browser chrome --reporter mocha-allure-reporter && npm run generate:report || npm run generate:report",
+    "delete:reports": "sleep 1 && node deleteReports.js",
+    "delete:pastaCyParallel": "sleep 1 && node deletePastaCyParallel.js"
+  },
+  "bin": {
+    "cypress-tags": "cypress-tags.js"
+  },
+  "keywords": [
+    "cucumber",
+    "gherkin",
+    "cypress",
+    "testing"
+  ],
+  "dependencies": {
+    "@js-brasil/fakerbr": "^0.0.2",
+    "allure-commandline": "^2.26.0",
+    "any-observable": "^0.5.1",
+    "archiver": "^5.3.0",
+    "arg": "^5.0.0",
+    "axios": "^1.6.5",
+    "eslint": "^8.41.0",
+    "eslint-plugin-cypress": "^2.11.1",
+    "eslint-plugin-mocha": "^10.1.0",
+    "eslint-plugin-vue": "^9.14.0",
+    "faker": "^5.5.3",
+    "fs-extra": "^11.2.0",
+    "gherkin": "^5.1.0",
+    "gherkin-lint": "^4.1.3",
+    "js-brasil": "^2.5.3",
+    "json": "^11.0.0",
+    "mocha-allure-reporter": "^1.4.0",
+    "path": "^0.12.7",
+    "request": "^2.88.2"
+  },
+  "cypress-cucumber-preprocessor": {
+    "step_definitions": "cypress/support/"
+  },
+  "devDependencies": {
+    "@cypress/webpack-preprocessor": "^5.11.1",
+    "@shelex/cypress-allure-plugin": "^2.40.1",
+    "cucumber-html-reporter": "^5.2.0",
+    "cypress": "^13.6.6",
+    "cypress-cucumber-preprocessor": "^4.3.1",
+    "cypress-if": "^1.10.4",
+    "cypress-multi-reporters": "^1.5.0",
+    "gerador-validador-cpf": "^5.0.1",
+    "husky": "^4.3.0",
+    "mocha": "^9.2.1",
+    "mochawesome": "^7.1.0",
+    "mochawesome-merge": "^4.2.0",
+    "mochawesome-report-generator": "^6.1.0",
+    "pdf2json": "^3.0.5",
+    "superagent": "^6.1.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prodatamobilitybrasil/automation_abt_fare_api.git"
+  },
+  "author": "Francllin Rios",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prodatamobilitybrasil/automation_abt_fare_api/issues"
+  },
+  "homepage": "https://github.com/prodatamobilitybrasil/automation_abt_fare_api#readme",
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run run:lints"
+    }
+  }
+}
